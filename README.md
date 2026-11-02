@@ -11,7 +11,8 @@
 ---
 
 <!-- Ganti URL di bawah dengan GIF / Screenshot gameplay kamu -->
-<img src="https://via.placeholder.com/800x450/1e1e1e/ffffff?text=Gameplay+Preview+GIF" width="100%" alt="Gameplay Preview"/>
+<img alt="previewGif" src="https://github.com/user-attachments/assets/9a3c2c2c-c401-4a68-9046-102635e8b60b" width="100%"/>
+
 
 </div>
 
