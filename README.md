@@ -16,7 +16,7 @@
 </div>
 
 > **Premis Permainan:**  
-> Waktu kamu hanya **60 detik** sebelum Bapak Kos datang memeriksa kebersihan kamar. Amankan semua barang berantakan ke dalam lemari atau buang keluar jendela sebelum inspeksi dimulai!
+> Waktu kamu hanya **120 detik** sebelum Bapak Kos datang memeriksa kebersihan kamar. Amankan semua barang berantakan ke dalam lemari atau buang keluar jendela sebelum inspeksi dimulai!
 
 ---
 
