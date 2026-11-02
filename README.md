@@ -11,7 +11,8 @@
 ---
 
 <!-- Ganti URL di bawah dengan GIF / Screenshot gameplay kamu -->
-<img alt="previewGif" src="https://github.com/user-attachments/assets/9a3c2c2c-c401-4a68-9046-102635e8b60b" width="100%"/>
+<img width="100%" alt="previewGif" src="https://github.com/user-attachments/assets/3006eb2c-763c-40bc-b07d-2d1a8e4e1c0c" />
+
 
 
 </div>
