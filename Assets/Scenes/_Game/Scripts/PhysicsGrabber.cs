@@ -11,6 +11,9 @@ public class PhysicsGrabber : MonoBehaviour
     public float maxBreakDistance = 2.0f;
     public float throwForce = 8.0f;
 
+    [Header("Visual References")]
+    public DualRiggedStretchyHand stretchyHand;
+
     private Rigidbody targetRB;
     private float originalDrag;
     private CabinetDoor activeDoor;
@@ -22,13 +25,11 @@ public class PhysicsGrabber : MonoBehaviour
 
         if (isHoldingKey)
         {
-            // 1. Jika sedang menarik pintu
             if (activeDoor != null)
             {
                 Vector2 mouseDelta = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
                 activeDoor.DragDoor(mouseDelta);
             }
-            // 2. Jika belum memegang apa-apa, coba ambil barang atau tarik pintu
             else if (targetRB == null)
             {
                 TryGrabObject();
@@ -36,16 +37,16 @@ public class PhysicsGrabber : MonoBehaviour
         }
         else
         {
-            // Lepas barang atau lepas pintu saat tombol dilepas
             if (targetRB != null) ReleaseObject();
             if (activeDoor != null)
             {
                 activeDoor.ReleaseDoor();
                 activeDoor = null;
+
+                if (stretchyHand != null) stretchyHand.DisableStretch();
             }
         }
 
-        // Lempar barang
         bool throwPressed = Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
         if (throwPressed && targetRB != null) ThrowObject();
 
@@ -76,16 +77,33 @@ public class PhysicsGrabber : MonoBehaviour
                 originalDrag = targetRB.linearDamping;
                 targetRB.linearDamping = dragAmount;
                 targetRB.useGravity = true;
+
+                // Mode 2 tangan untuk barang
+                if (stretchyHand != null)
+                {
+                    stretchyHand.EnableStretch(targetRB.transform, true);
+                }
             }
             else if (hit.collider.CompareTag("Door"))
             {
                 activeDoor = hit.collider.GetComponentInParent<CabinetDoor>();
+
+                // Mode 1 tangan untuk pintu (Mengirimkan hit.point & hit.normal permukaan pintu)
+                if (activeDoor != null && stretchyHand != null)
+                {
+                    stretchyHand.EnableStretch(activeDoor.transform, false, hit.point, hit.normal);
+                }
             }
         }
     }
 
     public void ReleaseObject()
     {
+        if (stretchyHand != null)
+        {
+            stretchyHand.DisableStretch();
+        }
+
         if (targetRB != null)
         {
             targetRB.linearDamping = originalDrag;
