@@ -9,8 +9,7 @@
 
 ---
 
-<!-- Ganti URL di bawah dengan GIF / Screenshot gameplay kamu -->
-<img alt="previewGif" src="https://github.com/user-attachments/assets/9a3c2c2c-c401-4a68-9046-102635e8b60b" width="100%"/>
+<img width="100%" alt="preview" src="https://github.com/user-attachments/assets/18e672b0-3858-4c9b-9826-78a91515d3fe" />
 
 </div>
 
