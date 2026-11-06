@@ -1,18 +1,16 @@
 <div align="center">
 
-# 📦 Bapak Kos-ku Ternyata Seorang Boti!
+# Bapak Kos-ku Ternyata Seorang Boti!
 **A 3D Physics-Rush Inspection Micro-Game**
 
 ![Unity 6](https://img.shields.io/badge/Unity-6000.0-2D2D2D?style=flat-square&logo=unity&logoColor=white)
 ![URP](https://img.shields.io/badge/Pipeline-URP-2D2D2D?style=flat-square&logo=unity&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20x64-2D2D2D?style=flat-square&logo=windows&logoColor=white)
-![Sprint](https://img.shields.io/badge/Dev-48--Hour%20Sprint-2D2D2D?style=flat-square)
 
 ---
 
 <!-- Ganti URL di bawah dengan GIF / Screenshot gameplay kamu -->
 <img alt="previewGif" src="https://github.com/user-attachments/assets/9a3c2c2c-c401-4a68-9046-102635e8b60b" width="100%"/>
-
 
 </div>
 
@@ -21,7 +19,7 @@
 
 ---
 
-## 🎮 Kontrol Permainan
+## Kontrol Permainan
 
 | Input | Akses / Aksi |
 | :--- | :--- |
@@ -32,7 +30,7 @@
 
 ---
 
-## 🛠️ Sistem & Mekanik Utama
+## Fitur yang Tersedia
 
 <details>
 <summary><b>1. Physics-Based Item Interaction</b></summary>
@@ -43,16 +41,25 @@
 </details>
 
 <details>
-<summary><b>2. Normalized Drag & Magnetic Cabinet Doors</b></summary>
+<summary><b>2. Dual-Arm Stretchy IK System</b></summary>
+<br>
+
+- **Procedural Elastic IK:** Mengintegrasikan Unity *Animation Rigging* (Two-Bone IK) dengan *procedural bone scaling real-time* untuk mekanik tangan melar.
+- **Smart Axis Clamping:** Perhitungan orientasi berbasis kamera (*Camera-Relative*) untuk mencegah tangan bersilangan dan pergelangan melintir 360°.
+- **Context-Aware Physics Grabber:** Menggunakan 1 tangan untuk pintu lemari (dengan kalkulasi *surface normal offset*) dan 2 tangan untuk barang (`MessyItem`).
+</details>
+
+<details>
+<summary><b>3. Normalized Drag & Magnetic Cabinet Doors</b></summary>
 <br>
 
 - **Progress Ratio System:** Pergerakan pintu menggunakan nilai rasio terukur (`0.0` sampai `1.0`), menghindari masalah rotasi sudut minus (*negative Euler angle bugs*).
-- **Magnetic Snap Zone:** Pintu secara otomatis akan menyedot/merapatkan engsel ke posisi tertutup rapat ($0\%$) atau terbuka penuh ($100\%$) saat berada di dalam rentang *threshold*.
+- **Magnetic Snap Zone:** Pintu secara otomatis merapatkan engsel ke posisi tertutup rapat (0%) atau terbuka penuh (100%) saat berada di dalam rentang *threshold*.
 - **Multi-Door Calibration:** Fitur *Invert Rotation* dan *Invert Drag* terpisah untuk memfasilitasi engsel pintu kiri dan kanan.
 </details>
 
 <details>
-<summary><b>3. Dynamic Safe-Zone Evaluator</b></summary>
+<summary><b>4. Dynamic Safe-Zone Evaluator</b></summary>
 <br>
 
 - Overlap deteksi area menggunakan `RoomZone` dan `CabinetZone`.
@@ -60,7 +67,8 @@
 </details>
 
 <details>
-<summary><b>4. Timeline Inspection Sequence</b></summary>
+<summary><b>5. Timeline Inspection Sequence</b></summary>
+<br>
 
 - Integrasi Unity **Timeline & Playable Director** yang terpicu otomatis saat timer menyentuh `00:00`.
 - Menggunakan **Signal Emitter** di akhir *track* sinematik untuk memicu evaluasi poin dan memunculkan UI Ending tanpa perlu *hardcoded coroutine movement*.
@@ -68,49 +76,17 @@
 
 ---
 
-## 🏆 Cabang Ending
+## Cabang Ending
 
 | Ending | Syarat Kelulusan | Deskripsi |
 | :--- | :--- | :--- |
 | **Good Ending** | Sisa barang berantakan $\le 1$ item | Kamar dinilai rapi. Uang sewa bulan depan dipotong Rp 50.000. |
 | **Bad Ending** | Sisa barang berantakan $> 1$ item | Kamar dinilai seperti kapal pecah. Surat pengusiran diterbitkan. |
-| **Secret Ending** | $100\%$ barang dibuang ke luar jendela | Kamar dalam kondisi kosong melompong total. |
+| **Secret Ending** | 100% barang dibuang ke luar jendela | Kamar dalam kondisi kosong melompong total. |
 
 ---
 
-## 📅 Dev Sprint Progress Log
-
-<details open>
-<summary><b>Jumat Malam: Character & Stretchy Hand Mechanics (DONE ✅)</b></summary>
-<br>
-
-- [x] **FPS Arms Modeling & Rigging:** Pemotongan mesh *FPS Arms* + armature di Blender serta normalisasi skala transform $(1, 1, 1)$ di Unity.
-- [x] **Procedural Elastic IK:** Integrasi Unity *Animation Rigging* (Two-Bone IK) dengan *procedural bone scaling real-time* untuk mekanik tangan melar.
-- [x] **Smart Axis Clamping:** Perhitungan orientasi berbasis kamera (*Camera-Relative*) untuk mencegah tangan bersilangan dan pergelangan melintir $360^\circ$.
-- [x] **Context-Aware Physics Grabber:** Penggunaan 1 tangan untuk pintu lemari (dilengkapi kalkulasi *surface normal offset*) dan 2 tangan untuk barang (`MessyItem`).
-</details>
-
-<details>
-<summary><b>Sabtu: Environment, Props & Physics Setup (IN PROGRESS ⏳)</b></summary>
-<br>
-
-- [ ] **Room & Cabinet Layout:** Impor dan penataan mesh 3D kamar kos, jendela, dan lemari dari Blender.
-- [ ] **Props Population:** Mengatur *Rigidbody*, *Collider*, dan Tag `"MessyItem"` pada barang-barang berantakan.
-- [ ] **Lighting & Post-Processing:** Setup URP Lighting suasana malam hari dan penyesuaian profil Post-Processing.
-</details>
-
-<details>
-<summary><b>Minggu: Core Loop Integration & Build (NEXT UP 🎯)</b></summary>
-<br>
-
-- [ ] **Inspection Timer & Timeline:** Integrasi *timer* 90 detik dengan pemicu sinematik inspeksi Bapak Kos.
-- [ ] **Safe-Zone & Ending Evaluator:** Sistem kalkulasi kelayakan kebersihan kamar dan pembagian 3 cabang Ending.
-- [ ] **UI Polish & Sound Effects:** Pemasangan audio SFX, UI Hud/Ending, dan eksportir *standalone build* Windows (.zip).
-</details>
-
----
-
-## 💻 Arsitektur & Spesifikasi Teknis
+## Arsitektur & Spesifikasi Teknis
 
 - **Engine Version:** Unity 6 (6000.0)
 - **Rendering Pipeline:** Universal Render Pipeline (URP)
@@ -121,10 +97,10 @@
 
 <div align="center">
 
-### 🚀 Unduh & Mainkan
+### Unduh & Mainkan
 
 [![Download Standalone Build](https://img.shields.io/badge/Release-Windows%20Build%20(.zip)-2D2D2D?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kholikdev/Bapak-Kos-ku-ternyata-seorang-Boti-/releases)
 
-Dibuat oleh **[Kholik](https://github.com/kholikdev)** — 48-Hour Weekend Game Sprint Portfolio.
+Dibuat oleh **[Kholik](https://github.com/kholikdev)**
 
 </div>
