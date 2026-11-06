@@ -11,8 +11,7 @@
 ---
 
 <!-- Ganti URL di bawah dengan GIF / Screenshot gameplay kamu -->
-<img width="100%" alt="previewGif" src="https://github.com/user-attachments/assets/3006eb2c-763c-40bc-b07d-2d1a8e4e1c0c" />
-
+<img alt="previewGif" src="https://github.com/user-attachments/assets/9a3c2c2c-c401-4a68-9046-102635e8b60b" width="100%"/>
 
 
 </div>
@@ -39,32 +38,32 @@
 <summary><b>1. Physics-Based Item Interaction</b></summary>
 <br>
 
-* **Hold-to-Grab Mechanics:** Menggunakan perhitungan `Rigidbody.linearVelocity` & `linearDamping` untuk mengambil dan menahan barang secara stabil tanpa benturan *jitter*.
-* **Impulse Throw:** Melempar barang secara instan menggunakan dorongan gaya fisika (*ForceMode.Impulse*).
+- **Hold-to-Grab Mechanics:** Menggunakan perhitungan `Rigidbody.linearVelocity` & `linearDamping` untuk mengambil dan menahan barang secara stabil tanpa benturan *jitter*.
+- **Impulse Throw:** Melempar barang secara instan menggunakan dorongan gaya fisika (*ForceMode.Impulse*).
 </details>
 
 <details>
 <summary><b>2. Normalized Drag & Magnetic Cabinet Doors</b></summary>
 <br>
 
-* **Progress Ratio System:** Pergerakan pintu menggunakan nilai rasio terukur (`0.0` sampai `1.0`), menghindari masalah rotasi sudut minus (*negative Euler angle bugs*).
-* **Magnetic Snap Zone:** Pintu secara otomatis akan menyedot/merapatkan engsel ke posisi tertutup rapat ($0\%$) atau terbuka penuh ($100\%$) saat berada di dalam rentang *threshold*.
-* **Multi-Door Calibration:** Fitur *Invert Rotation* dan *Invert Drag* terpisah untuk memfasilitasi engsel pintu kiri dan kanan.
+- **Progress Ratio System:** Pergerakan pintu menggunakan nilai rasio terukur (`0.0` sampai `1.0`), menghindari masalah rotasi sudut minus (*negative Euler angle bugs*).
+- **Magnetic Snap Zone:** Pintu secara otomatis akan menyedot/merapatkan engsel ke posisi tertutup rapat ($0\%$) atau terbuka penuh ($100\%$) saat berada di dalam rentang *threshold*.
+- **Multi-Door Calibration:** Fitur *Invert Rotation* dan *Invert Drag* terpisah untuk memfasilitasi engsel pintu kiri dan kanan.
 </details>
 
 <details>
 <summary><b>3. Dynamic Safe-Zone Evaluator</b></summary>
 <br>
 
-* Overlap deteksi area menggunakan `RoomZone` dan `CabinetZone`.
-* **Kondisi Kelayakan:** Barang di dalam area lemari hanya dihitung **AMAN** apabila seluruh pintu lemari berada dalam status **TERTUTUP RAPAT**. Jika pintu terbuka saat inspeksi, barang di dalamnya tetap dihitung sebagai pelanggaran.
+- Overlap deteksi area menggunakan `RoomZone` dan `CabinetZone`.
+- **Kondisi Kelayakan:** Barang di dalam area lemari hanya dihitung **AMAN** apabila seluruh pintu lemari berada dalam status **TERTUTUP RAPAT**. Jika pintu terbuka saat inspeksi, barang di dalamnya tetap dihitung sebagai pelanggaran.
 </details>
 
 <details>
 <summary><b>4. Timeline Inspection Sequence</b></summary>
 
-* Integrasi Unity **Timeline & Playable Director** yang terpicu otomatis saat timer menyentuh `00:00`.
-* Menggunakan **Signal Emitter** di akhir *track* sinematik untuk memicu evaluasi poin dan memunculkan UI Ending tanpa perlu *hardcoded coroutine movement*.
+- Integrasi Unity **Timeline & Playable Director** yang terpicu otomatis saat timer menyentuh `00:00`.
+- Menggunakan **Signal Emitter** di akhir *track* sinematik untuk memicu evaluasi poin dan memunculkan UI Ending tanpa perlu *hardcoded coroutine movement*.
 </details>
 
 ---
@@ -79,12 +78,44 @@
 
 ---
 
+## 📅 Dev Sprint Progress Log
+
+<details open>
+<summary><b>Jumat Malam: Character & Stretchy Hand Mechanics (DONE ✅)</b></summary>
+<br>
+
+- [x] **FPS Arms Modeling & Rigging:** Pemotongan mesh *FPS Arms* + armature di Blender serta normalisasi skala transform $(1, 1, 1)$ di Unity.
+- [x] **Procedural Elastic IK:** Integrasi Unity *Animation Rigging* (Two-Bone IK) dengan *procedural bone scaling real-time* untuk mekanik tangan melar.
+- [x] **Smart Axis Clamping:** Perhitungan orientasi berbasis kamera (*Camera-Relative*) untuk mencegah tangan bersilangan dan pergelangan melintir $360^\circ$.
+- [x] **Context-Aware Physics Grabber:** Penggunaan 1 tangan untuk pintu lemari (dilengkapi kalkulasi *surface normal offset*) dan 2 tangan untuk barang (`MessyItem`).
+</details>
+
+<details>
+<summary><b>Sabtu: Environment, Props & Physics Setup (IN PROGRESS ⏳)</b></summary>
+<br>
+
+- [ ] **Room & Cabinet Layout:** Impor dan penataan mesh 3D kamar kos, jendela, dan lemari dari Blender.
+- [ ] **Props Population:** Mengatur *Rigidbody*, *Collider*, dan Tag `"MessyItem"` pada barang-barang berantakan.
+- [ ] **Lighting & Post-Processing:** Setup URP Lighting suasana malam hari dan penyesuaian profil Post-Processing.
+</details>
+
+<details>
+<summary><b>Minggu: Core Loop Integration & Build (NEXT UP 🎯)</b></summary>
+<br>
+
+- [ ] **Inspection Timer & Timeline:** Integrasi *timer* 90 detik dengan pemicu sinematik inspeksi Bapak Kos.
+- [ ] **Safe-Zone & Ending Evaluator:** Sistem kalkulasi kelayakan kebersihan kamar dan pembagian 3 cabang Ending.
+- [ ] **UI Polish & Sound Effects:** Pemasangan audio SFX, UI Hud/Ending, dan eksportir *standalone build* Windows (.zip).
+</details>
+
+---
+
 ## 💻 Arsitektur & Spesifikasi Teknis
 
-* **Engine Version:** Unity 6 (6000.0)
-* **Rendering Pipeline:** Universal Render Pipeline (URP)
-* **Post-Processing Profile:** ACES Tonemapping, Screen Space Ambient Occlusion (SSAO), Color Adjustments, & Subtle Film Grain (`0.3`)
-* **Input Handler:** Unity New Input System (`Mouse.current.delta` & `Keyboard.current`)
+- **Engine Version:** Unity 6 (6000.0)
+- **Rendering Pipeline:** Universal Render Pipeline (URP)
+- **Post-Processing Profile:** ACES Tonemapping, Screen Space Ambient Occlusion (SSAO), Color Adjustments, & Subtle Film Grain (`0.3`)
+- **Input Handler:** Unity New Input System (`Mouse.current.delta` & `Keyboard.current`)
 
 ---
 
