@@ -80,8 +80,8 @@
 
 | Ending | Syarat Kelulusan | Deskripsi |
 | :--- | :--- | :--- |
-| **Good Ending** | Sisa barang berantakan ≤ 1 item | Nah, rapi begini kan enak dilihat. Cepet mandi, nanti ku-kasih hadiah spesial. |
-| **Bad Ending** | Sisa barang berantakan > 1 item | Kamar berantakan seperti kapal pecah begini! Besok kamu harus pindah dari sini!. |
+| **Good Ending** | Sisa barang berantakan ≤ 2 item | Nah, rapi begini kan enak dilihat. Cepet mandi, nanti ku-kasih hadiah spesial. |
+| **Bad Ending** | Sisa barang berantakan > 2 item | Kamar berantakan seperti kapal pecah begini! Besok kamu harus pindah dari sini!. |
 | **Secret Ending** | 100% barang dibuang ke luar jendela | Ini kamar kos? Kok kosong melompong begini? Barang-barangnya kemana?. |
 
 ---
