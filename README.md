@@ -1,27 +1,27 @@
 <div align="center">
 
-# Bapak Kos-ku Ternyata Seorang Boti!
+# Bapak Kosku Ternyata Seorang Boti!
 **A 3D Physics-Rush Inspection Micro-Game**
 
 ![Unity 6](https://img.shields.io/badge/Unity-6000.0-2D2D2D?style=flat-square&logo=unity&logoColor=white)
 ![URP](https://img.shields.io/badge/Pipeline-URP-2D2D2D?style=flat-square&logo=unity&logoColor=white)
-![Platform](https://shields.io)
-[![itch.io](https://shields.io)](https://itch.io)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20WebGL-2D2D2D?style=flat-square)
+[![itch.io](https://img.shields.io/badge/itch.io-Play%20Now-FA5C5C?style=flat-square&logo=itch.io&logoColor=white)](https://kholik.itch.io/bapak-kos-boti)
 
 ---
 
-<img width="100%" alt="preview" src="https://github.com/user-attachments/assets/18e672b0-3858-4c9b-9826-78a91515d3fe" />
+<img width="100%" alt="Preview Gameplay Bapak Kosku Ternyata Seorang Boti" src="https://github.com/user-attachments/assets/18e672b0-3858-4c9b-9826-78a91515d3fe" />
 
 </div>
 
 > **Premis Permainan:**  
-> Waktu kamu hanya **90 detik** sebelum Bapak Kos datang memeriksa kebersihan kamar. Amankan semua barang berantakan ke dalam lemari atau buang keluar jendela sebelum inspeksi dimulai!
+> Waktu kamu hanya **90 detik** sebelum Bapak Kos datang memeriksa kebersihan kamar. Amankan semua barang berantakan ke dalam lemari atau buang ke luar jendela sebelum inspeksi dimulai.
 
 ---
 
 ## Kontrol Permainan
 
-| Input | Akses / Aksi |
+| Input | Aksi |
 | :--- | :--- |
 | <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> | Pergerakan Karakter |
 | <kbd>Mouse Move</kbd> | Rotasi Kamera (*Smooth Lerp Interpolation*) |
@@ -36,8 +36,8 @@
 <summary><b>1. Physics-Based Item Interaction</b></summary>
 <br>
 
-- **Hold-to-Grab Mechanics:** Menggunakan perhitungan `Rigidbody.linearVelocity` & `linearDamping` untuk mengambil dan menahan barang secara stabil tanpa benturan *jitter*.
-- **Impulse Throw:** Melempar barang secara instan menggunakan dorongan gaya fisika (*ForceMode.Impulse*).
+- **Hold-to-Grab Mechanics:** Menggunakan kalkulasi `Rigidbody.linearVelocity` dan `linearDamping` untuk mengambil serta menahan barang secara stabil tanpa benturan *jitter*.
+- **Impulse Throw:** Melempar barang secara instan menggunakan dorongan gaya fisika (`ForceMode.Impulse`).
 </details>
 
 <details>
@@ -45,7 +45,7 @@
 <br>
 
 - **Procedural Elastic IK:** Mengintegrasikan Unity *Animation Rigging* (Two-Bone IK) dengan *procedural bone scaling real-time* untuk mekanik tangan melar.
-- **Smart Axis Clamping:** Perhitungan orientasi berbasis kamera (*Camera-Relative*) untuk mencegah tangan bersilangan dan pergelangan melintir 360°.
+- **Smart Axis Clamping:** Perhitungan orientasi berbasis kamera (*Camera-Relative*) untuk mencegah tangan bersilangan dan pergelangan melintir 360 derajat.
 - **Context-Aware Physics Grabber:** Menggunakan 1 tangan untuk pintu lemari (dengan kalkulasi *surface normal offset*) dan 2 tangan untuk barang (`MessyItem`).
 </details>
 
@@ -62,16 +62,16 @@
 <summary><b>4. Dynamic Safe-Zone Evaluator</b></summary>
 <br>
 
-- Overlap deteksi area menggunakan `RoomZone` dan `CabinetZone`.
-- **Kondisi Kelayakan:** Barang di dalam area lemari hanya dihitung **AMAN** apabila seluruh pintu lemari berada dalam status **TERTUTUP RAPAT**. Jika pintu terbuka saat inspeksi, barang di dalamnya tetap dihitung sebagai pelanggaran.
+- **Zone Overlap Detection:** Deteksi area menggunakan `RoomZone` dan `CabinetZone`.
+- **Kondisi Kelayakan:** Barang di dalam area lemari hanya dihitung **AMAN** apabila seluruh pintu lemari berada dalam status **TERTUTUP RAPAT**. Jika pintu masih terbuka saat inspeksi, barang di dalamnya tetap dihitung sebagai pelanggaran.
 </details>
 
 <details>
 <summary><b>5. Timeline Inspection Sequence</b></summary>
 <br>
 
-- Integrasi Unity **Timeline & Playable Director** yang terpicu otomatis saat timer menyentuh `00:00`.
-- Menggunakan **Signal Emitter** di akhir *track* sinematik untuk memicu evaluasi poin dan memunculkan UI Ending tanpa perlu *hardcoded coroutine movement*.
+- **Automated Trigger:** Integrasi Unity **Timeline & Playable Director** yang terpicu otomatis saat *timer* menyentuh `00:00`.
+- **Signal-Driven Evaluation:** Menggunakan **Signal Emitter** di akhir *track* sinematik untuk memicu evaluasi poin dan memunculkan UI Ending tanpa perlu *hardcoded coroutine movement*.
 </details>
 
 ---
@@ -80,8 +80,8 @@
 
 | Ending | Syarat Kelulusan | Deskripsi |
 | :--- | :--- | :--- |
-| **Good Ending** | Sisa barang berantakan $\le 1$ item | Kamar dinilai rapi. Uang sewa bulan depan dipotong Rp 50.000. |
-| **Bad Ending** | Sisa barang berantakan $> 1$ item | Kamar dinilai seperti kapal pecah. Surat pengusiran diterbitkan. |
+| **Good Ending** | Sisa barang berantakan ≤ 1 item | Kamar dinilai rapi. Uang sewa bulan depan dipotong Rp50.000. |
+| **Bad Ending** | Sisa barang berantakan > 1 item | Kamar dinilai seperti kapal pecah. Surat pengusiran diterbitkan. |
 | **Secret Ending** | 100% barang dibuang ke luar jendela | Kamar dalam kondisi kosong melompong total. |
 
 ---
@@ -90,7 +90,7 @@
 
 - **Engine Version:** Unity 6 (6000.0)
 - **Rendering Pipeline:** Universal Render Pipeline (URP)
-- **Post-Processing Profile:** ACES Tonemapping, Screen Space Ambient Occlusion (SSAO), Color Adjustments, & Subtle Film Grain (`0.3`)
+- **Post-Processing Profile:** ACES Tonemapping, Screen Space Ambient Occlusion (SSAO), Color Adjustments, dan Subtle Film Grain (`0.3`)
 - **Input Handler:** Unity New Input System (`Mouse.current.delta` & `Keyboard.current`)
 - **Target Platform:** Windows x64 & WebGL (HTML5)
 
@@ -100,7 +100,7 @@
 
 ### Unduh & Mainkan
 
-[![Play or download on itch.io](https://shields.io)]([https://itch.io](http://kholik.itch.io/bapak-kos-boti))
+[![Play or download on itch.io](https://img.shields.io/badge/itch.io-Play%20or%20Download-FA5C5C?style=for-the-badge&logo=itch.io&logoColor=white)](https://kholik.itch.io/bapak-kos-boti)
 
 Dibuat oleh **[Kholik](https://github.com/kholikdev)**
 
