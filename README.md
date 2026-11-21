@@ -100,8 +100,7 @@
 
 ### Unduh & Mainkan
 
-[![Play on itch.io](https://shields.io)](https://itch.io)
-[![Download Standalone Build](https://img.shields.io/badge/Release-Windows%20Build%20(.zip)-2D2D2D?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kholikdev/Bapak-Kos-ku-ternyata-seorang-Boti-/releases)
+[![Play or download on itch.io](https://shields.io)]([https://itch.io](http://kholik.itch.io/bapak-kos-boti))
 
 Dibuat oleh **[Kholik](https://github.com/kholikdev)**
 
