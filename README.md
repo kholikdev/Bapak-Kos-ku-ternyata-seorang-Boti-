@@ -5,7 +5,8 @@
 
 ![Unity 6](https://img.shields.io/badge/Unity-6000.0-2D2D2D?style=flat-square&logo=unity&logoColor=white)
 ![URP](https://img.shields.io/badge/Pipeline-URP-2D2D2D?style=flat-square&logo=unity&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Windows%20x64-2D2D2D?style=flat-square&logo=windows&logoColor=white)
+![Platform](https://shields.io)
+[![itch.io](https://shields.io)](https://itch.io)
 
 ---
 
@@ -91,6 +92,7 @@
 - **Rendering Pipeline:** Universal Render Pipeline (URP)
 - **Post-Processing Profile:** ACES Tonemapping, Screen Space Ambient Occlusion (SSAO), Color Adjustments, & Subtle Film Grain (`0.3`)
 - **Input Handler:** Unity New Input System (`Mouse.current.delta` & `Keyboard.current`)
+- **Target Platform:** Windows x64 & WebGL (HTML5)
 
 ---
 
@@ -98,6 +100,7 @@
 
 ### Unduh & Mainkan
 
+[![Play on itch.io](https://shields.io)](https://itch.io)
 [![Download Standalone Build](https://img.shields.io/badge/Release-Windows%20Build%20(.zip)-2D2D2D?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kholikdev/Bapak-Kos-ku-ternyata-seorang-Boti-/releases)
 
 Dibuat oleh **[Kholik](https://github.com/kholikdev)**
