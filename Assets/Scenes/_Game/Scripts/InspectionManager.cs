@@ -8,24 +8,60 @@ public class InspectionManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public EndingEvaluator endingEvaluator;
 
+    [Header("Audio Settings")]
+    public AudioSource timerAudioSource;
+    public AudioClip tickSound;
+    [Range(0f, 1f)] public float tickVolume = 0.6f;
+
     private bool isTimerRunning = true;
+    private int lastSecondRecorded = -1;
+
+    void Start()
+    {
+        if (timerAudioSource == null)
+        {
+            timerAudioSource = GetComponent<AudioSource>();
+            if (timerAudioSource == null)
+            {
+                timerAudioSource = gameObject.AddComponent<AudioSource>();
+                timerAudioSource.playOnAwake = false;
+                timerAudioSource.spatialBlend = 0f;
+            }
+        }
+    }
 
     void Update()
     {
-        if (isTimerRunning)
+        if (!isTimerRunning) return;
+
+        // hitung mundur
+        if (timeRemaining > 0)
         {
-            if (timeRemaining > 0)
+            timeRemaining -= Time.deltaTime;
+            UpdateTimerUI(timeRemaining);
+
+            // Suara tik satu kali setiap angka detik berganti
+            int currentSecond = Mathf.FloorToInt(timeRemaining);
+            if (currentSecond != lastSecondRecorded)
             {
-                timeRemaining -= Time.deltaTime;
-                UpdateTimerUI(timeRemaining);
+                lastSecondRecorded = currentSecond;
+
+                if (timerAudioSource != null && tickSound != null)
+                {
+                    timerAudioSource.PlayOneShot(tickSound, tickVolume);
+                }
+                else if (AudioManager.Instance != null && tickSound != null)
+                {
+                    AudioManager.Instance.PlaySFX(tickSound, tickVolume);
+                }
             }
-            else
-            {
-                timeRemaining = 0;
-                isTimerRunning = false;
-                UpdateTimerUI(0);
-                TriggerInspection();
-            }
+        }
+        else
+        {
+            timeRemaining = 0;
+            isTimerRunning = false;
+            UpdateTimerUI(0);
+            TriggerInspection();
         }
     }
 
@@ -38,10 +74,8 @@ public class InspectionManager : MonoBehaviour
 
     void TriggerInspection()
     {
-        Debug.Log("Waktu Habis! Cutscene Timeline Dimulai...");
+        // mulai inspeksi
         if (endingEvaluator != null)
-        {
             endingEvaluator.StartCutscene();
-        }
     }
 }

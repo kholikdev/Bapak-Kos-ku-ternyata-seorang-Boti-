@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Playables; // PENTING: Untuk panggil Timeline
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -18,14 +18,41 @@ public class EndingEvaluator : MonoBehaviour
     public TextMeshProUGUI endingDescText;
 
     [Header("Timeline Reference")]
-    public PlayableDirector cutsceneTimeline; // Drag GameObject CutsceneTimeline ke sini
+    public PlayableDirector cutsceneTimeline;
     public FirstPersonController playerController;
     public PhysicsGrabber physicsGrabber;
 
-    // Dipanggil dari InspectionManager pas timer habis
+    [Header("Audio Settings")]
+    public AudioSource endingAudioSource;
+    public AudioClip goodEndingSound;
+    public AudioClip badEndingSound;
+    public AudioClip secretEndingSound;
+
+    void Start()
+    {
+        if (endingAudioSource == null)
+        {
+            endingAudioSource = GetComponent<AudioSource>();
+            if (endingAudioSource == null)
+            {
+                endingAudioSource = gameObject.AddComponent<AudioSource>();
+                endingAudioSource.playOnAwake = false;
+                endingAudioSource.spatialBlend = 0f;
+            }
+        }
+        if (endingAudioSource != null)
+        {
+            endingAudioSource.ignoreListenerPause = true;
+        }
+    }
+
     public void StartCutscene()
     {
-        // Matikan kontrol player & lepas barang
+        // Ganti BGM ke musik mencekam
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SwitchToTenseBGM();
+
+        // lepas barang dan kunci player
         if (physicsGrabber != null)
         {
             physicsGrabber.ReleaseObject();
@@ -33,21 +60,19 @@ public class EndingEvaluator : MonoBehaviour
         }
         if (playerController != null) playerController.enabled = false;
 
-        // Jalankan Timeline!
+        // putar cutscene
         if (cutsceneTimeline != null)
-        {
             cutsceneTimeline.Play();
-        }
         else
-        {
-            // Fallback jika tidak ada timeline
             EvaluateEnding();
-        }
     }
 
-    // Dipanggil otomatis oleh Signal Emitter di akhir Timeline!
     public void EvaluateEnding()
     {
+        // Hentikan BGM saat panel ending tampil
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.StopBGM();
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -60,6 +85,7 @@ public class EndingEvaluator : MonoBehaviour
 
         bool isCabinetClosed = AreCabinetDoorsClosed();
 
+        // hitung posisi barang
         foreach (GameObject item in allItems)
         {
             Vector3 itemPos = item.transform.position;
@@ -68,35 +94,47 @@ public class EndingEvaluator : MonoBehaviour
             bool isInRoom = roomZoneCollider != null && roomZoneCollider.bounds.Contains(itemPos);
 
             if (isInCabinet && isCabinetClosed)
-            {
                 itemsStoredInCabinet++;
-            }
             else if (isInRoom)
-            {
                 itemsMessyInRoom++;
-            }
             else
-            {
                 itemsOutsideRoom++;
-            }
         }
 
         endingPanel.SetActive(true);
 
+        AudioClip stingerToPlay = null;
+
+        // tentukan ending
         if (totalItemsInGame > 0 && itemsOutsideRoom == totalItemsInGame)
         {
             endingTitleText.text = "<color=yellow>SECRET ENDING</color>";
-            endingDescText.text = "\"Ini kamar kos atau lapangan? Kok kosong melompong begini? Kasur kamu mana?!\"";
+            endingDescText.text = "\"Ini kamar kos? Kok kosong melompong begini? Barang-barangnya kemana?!\"";
+            stingerToPlay = secretEndingSound;
         }
-        else if (itemsMessyInRoom <= 1)
+        else if (itemsMessyInRoom <= 2)
         {
             endingTitleText.text = "<color=green>GOOD ENDING</color>";
-            endingDescText.text = $"Sisa barang berantakan: {itemsMessyInRoom} item.\n\n\"Nah, rapi begini kan enak dilihat. Bulan depan Ibu potong uang sewanya ya.\"";
+            endingDescText.text = $"Sisa barang berantakan: {itemsMessyInRoom} item.\n\n\"Nah, rapi begini kan enak dilihat. Cepet mandi, nanti ku-kasih hadiah spesial.\"";
+            stingerToPlay = goodEndingSound;
         }
         else
         {
             endingTitleText.text = "<color=red>BAD ENDING</color>";
             endingDescText.text = $"Sisa barang berantakan: {itemsMessyInRoom} item.\n\n\"Kamar berantakan seperti kapal pecah begini! Besok kamu harus pindah dari sini!\"";
+            stingerToPlay = badEndingSound;
+        }
+
+        if (stingerToPlay != null)
+        {
+            if (endingAudioSource != null)
+            {
+                endingAudioSource.PlayOneShot(stingerToPlay, 1f);
+            }
+            else if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX(stingerToPlay, 1f);
+            }
         }
 
         Time.timeScale = 0f;
@@ -108,10 +146,7 @@ public class EndingEvaluator : MonoBehaviour
 
         foreach (CabinetDoor door in cabinetDoors)
         {
-            if (door != null && !door.IsClosed())
-            {
-                return false;
-            }
+            if (door != null && !door.IsClosed()) return false;
         }
         return true;
     }

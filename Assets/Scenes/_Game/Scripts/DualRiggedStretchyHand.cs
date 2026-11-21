@@ -16,10 +16,16 @@ public class DualRiggedStretchyHand : MonoBehaviour
 
     [Header("Stretch & Clamping Settings")]
     public float handClampingOffset = 0.25f;
-    public float doorSurfaceOffset = 0.08f; // Offset dasar permukaan pintu
+    public float doorSurfaceOffset = 0.08f;
     public float followSpeed = 25f;
     public float returnSpeed = 15f;
     public float maxStretchMultiplier = 8f;
+
+    [Header("Audio Settings")]
+    public AudioSource rubberAudioSource;
+    public AudioClip rubberStretchSound;
+    public float stretchDeltaThreshold = 0.05f;
+    [Range(0f, 1f)] public float rubberVolume = 0.8f;
 
     private Transform currentGrabTarget;
     private bool isGrabbing = false;
@@ -33,8 +39,23 @@ public class DualRiggedStretchyHand : MonoBehaviour
     private Vector3 initialUpperArmScaleR, initialForeArmScaleR;
     private Vector3 initialUpperArmScaleL, initialForeArmScaleL;
 
+    private float lastAudioStretchRatio = 1.0f;
+    private float rubberStopTimer = 0f;
+
     void Start()
     {
+        // Pastikan tangan punya AudioSource sendiri agar tidak membajak sfxSource global
+        if (rubberAudioSource == null)
+        {
+            rubberAudioSource = GetComponent<AudioSource>();
+            if (rubberAudioSource == null)
+            {
+                rubberAudioSource = gameObject.AddComponent<AudioSource>();
+                rubberAudioSource.playOnAwake = false;
+                rubberAudioSource.spatialBlend = 0f;
+            }
+        }
+
         if (upperArmR != null && foreArmR != null && defaultHandRestPosR != null)
         {
             initialArmLengthR = Vector3.Distance(upperArmR.position, foreArmR.position) + Vector3.Distance(foreArmR.position, defaultHandRestPosR.position);
@@ -58,8 +79,7 @@ public class DualRiggedStretchyHand : MonoBehaviour
 
             if (isDualHandMode)
             {
-                // --- MODE 2 TANGAN (Barang) ---
-                // Gunakan sumbu kanan Kamera agar posisi kanan/kiri TIDAK PERNAH terbalik saat barang berputar
+                // pegang dua tangan
                 Vector3 cameraRight = Camera.main != null ? Camera.main.transform.right : transform.right;
 
                 Vector3 rightSide = centerPos + (cameraRight * handClampingOffset);
@@ -68,7 +88,6 @@ public class DualRiggedStretchyHand : MonoBehaviour
                 ikTargetHandR.position = Vector3.Lerp(ikTargetHandR.position, rightSide, Time.deltaTime * followSpeed);
                 ikTargetHandL.position = Vector3.Lerp(ikTargetHandL.position, leftSide, Time.deltaTime * followSpeed);
 
-                // Rotasi pergelangan tetap menghadap ke pusat barang
                 Quaternion targetRotR = Quaternion.LookRotation(centerPos - ikTargetHandR.position, Vector3.up);
                 Quaternion targetRotL = Quaternion.LookRotation(centerPos - ikTargetHandL.position, Vector3.up);
 
@@ -80,7 +99,7 @@ public class DualRiggedStretchyHand : MonoBehaviour
             }
             else
             {
-                // --- MODE 1 TANGAN (Pintu Lemari) ---
+                // pegang satu tangan
                 Vector3 targetHandPos;
                 Quaternion targetHandRot;
 
@@ -89,20 +108,13 @@ public class DualRiggedStretchyHand : MonoBehaviour
                     Vector3 worldHitPos = currentGrabTarget.TransformPoint(localHitPoint);
                     Vector3 worldNormal = currentGrabTarget.TransformDirection(localHitNormal);
 
-                    // 1. Hitung rasio melar lengan secara real-time
                     float currentDist = Vector3.Distance(upperArmR.position, worldHitPos);
                     float stretchRatio = currentDist / (initialArmLengthR > 0.001f ? initialArmLengthR : 1f);
 
-                    // 2. Dynamic Offset: Makin melar/mundur pemain, offset dinaikkan agar mesh lengan tidak mendesak ke dalam pintu
                     float dynamicOffset = doorSurfaceOffset * (stretchRatio > 1.0f ? 1.0f + (stretchRatio - 1.0f) * 0.4f : 1.0f);
 
-                    // 3. Vektor tarik ke bahu pemain agar posisi tangan tertarik ke luar dari arah sudut pandang
                     Vector3 dirToShoulder = (upperArmR.position - worldHitPos).normalized;
-
-                    // Gabungkan Offset Normal Pintu + Offset Tarikan Bahu
                     targetHandPos = worldHitPos + (worldNormal * dynamicOffset) + (dirToShoulder * (dynamicOffset * 0.5f));
-
-                    // Rotasi pergelangan menyesuaikan permukaan pintu
                     targetHandRot = Quaternion.LookRotation(-worldNormal, Vector3.up);
                 }
                 else
@@ -128,8 +140,14 @@ public class DualRiggedStretchyHand : MonoBehaviour
     {
         if (upperArm == null || foreArm == null || targetHand == null || initialLength <= 0.001f) return;
 
+        // efek tangan melar
         float currentDistance = Vector3.Distance(upperArm.position, targetHand.position);
         float stretchRatio = currentDistance / initialLength;
+
+        if (upperArm == upperArmR)
+        {
+            UpdateRubberAudio(stretchRatio);
+        }
 
         if (stretchRatio > 1.0f)
         {
@@ -142,6 +160,50 @@ public class DualRiggedStretchyHand : MonoBehaviour
             upperArm.localScale = baseScaleUpper;
             foreArm.localScale = baseScaleFore;
         }
+    }
+
+    private void UpdateRubberAudio(float stretchRatio)
+    {
+        if (rubberAudioSource == null || rubberStretchSound == null) return;
+
+        float stretchDeltaSpeed = Mathf.Abs(stretchRatio - lastAudioStretchRatio) / Mathf.Max(Time.deltaTime, 0.0001f);
+        bool isStretchingNow = (stretchRatio > 1.02f) && (stretchDeltaSpeed > stretchDeltaThreshold) && isGrabbing;
+
+        if (isStretchingNow)
+        {
+            rubberStopTimer = 0.08f;
+            if (!rubberAudioSource.isPlaying)
+            {
+                rubberAudioSource.clip = rubberStretchSound;
+                rubberAudioSource.loop = true;
+                rubberAudioSource.volume = rubberVolume;
+                rubberAudioSource.pitch = Random.Range(0.96f, 1.04f);
+                rubberAudioSource.Play();
+            }
+        }
+        else
+        {
+            if (rubberStopTimer > 0f)
+            {
+                rubberStopTimer -= Time.deltaTime;
+            }
+            else if (rubberAudioSource.isPlaying)
+            {
+                rubberAudioSource.Stop();
+            }
+        }
+
+        lastAudioStretchRatio = stretchRatio;
+    }
+
+    private void StopRubberAudio()
+    {
+        if (rubberAudioSource != null && rubberAudioSource.isPlaying)
+        {
+            rubberAudioSource.Stop();
+        }
+        lastAudioStretchRatio = 1.0f;
+        rubberStopTimer = 0f;
     }
 
     public void EnableStretch(Transform target, bool useBothHands = true, Vector3 hitPoint = default, Vector3 hitNormal = default)
@@ -167,10 +229,13 @@ public class DualRiggedStretchyHand : MonoBehaviour
         isGrabbing = false;
         currentGrabTarget = null;
         useSurfaceHit = false;
+        StopRubberAudio();
     }
 
     private void ResetHandsToDefault()
     {
+        StopRubberAudio();
+        // balik ke posisi awal
         if (ikTargetHandR != null && defaultHandRestPosR != null)
         {
             ikTargetHandR.position = Vector3.Lerp(ikTargetHandR.position, defaultHandRestPosR.position, Time.deltaTime * returnSpeed);

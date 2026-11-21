@@ -23,6 +23,7 @@ public class PhysicsGrabber : MonoBehaviour
         bool isHoldingKey = (Mouse.current != null && Mouse.current.leftButton.isPressed) ||
                             (Keyboard.current != null && Keyboard.current.eKey.isPressed);
 
+        // interaksi ambil atau tarik
         if (isHoldingKey)
         {
             if (activeDoor != null)
@@ -47,9 +48,11 @@ public class PhysicsGrabber : MonoBehaviour
             }
         }
 
+        // lempar barang
         bool throwPressed = Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
         if (throwPressed && targetRB != null) ThrowObject();
 
+        // lepas jika terlalu jauh
         if (targetRB != null)
         {
             float distance = Vector3.Distance(holdPoint.position, targetRB.position);
@@ -59,6 +62,7 @@ public class PhysicsGrabber : MonoBehaviour
 
     void FixedUpdate()
     {
+        // tarik fisik barang
         if (targetRB != null)
         {
             Vector3 direction = holdPoint.position - targetRB.position;
@@ -71,6 +75,7 @@ public class PhysicsGrabber : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, grabRange))
         {
+            // ambil barang
             if (hit.collider.CompareTag("MessyItem") && hit.rigidbody != null)
             {
                 targetRB = hit.rigidbody;
@@ -78,21 +83,16 @@ public class PhysicsGrabber : MonoBehaviour
                 targetRB.linearDamping = dragAmount;
                 targetRB.useGravity = true;
 
-                // Mode 2 tangan untuk barang
                 if (stretchyHand != null)
-                {
                     stretchyHand.EnableStretch(targetRB.transform, true);
-                }
             }
+            // tarik pintu
             else if (hit.collider.CompareTag("Door"))
             {
                 activeDoor = hit.collider.GetComponentInParent<CabinetDoor>();
 
-                // Mode 1 tangan untuk pintu (Mengirimkan hit.point & hit.normal permukaan pintu)
                 if (activeDoor != null && stretchyHand != null)
-                {
                     stretchyHand.EnableStretch(activeDoor.transform, false, hit.point, hit.normal);
-                }
             }
         }
     }
@@ -100,9 +100,7 @@ public class PhysicsGrabber : MonoBehaviour
     public void ReleaseObject()
     {
         if (stretchyHand != null)
-        {
             stretchyHand.DisableStretch();
-        }
 
         if (targetRB != null)
         {
